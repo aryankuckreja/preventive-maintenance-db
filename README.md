@@ -20,13 +20,11 @@ A MySQL 8 database for a facilities contractor that maintains equipment in clien
 
 ## Highlights
 
-| | |
-|---|---|
-| **Schema** | 14 relations: a work-order superclass with a preventive subclass, two weak entities (time entries, part transactions), two many-to-many relations (certifications held, certifications required) and a self-referencing asset hierarchy |
-| **Rules in the database** | 33 CHECK constraints and 5 triggers. A technician without a valid licence cannot log time on a chiller; a parts issue larger than the stock on hand is refused |
-| **Data** | 360 assets in 25 buildings, 60 technicians, 5,329 work orders, 11,190 time entries and 5,268 part transactions, Nov 2023 to Nov 2026 |
-| **Reproducible** | `random.seed(3309)`: the generator writes identical files on every run, and CI checks this with SHA-256 |
-| **Verified** | Every push loads the full dataset into MySQL 8, runs 7 integrity checks, and confirms 9 rule-breaking statements are each rejected with the expected error |
+- **Schema:** 14 relations, including a work-order superclass with a preventive subclass, two weak entities (time entries, part transactions), two many-to-many relations (certifications held and required) and a self-referencing asset hierarchy.
+- **Rules in the database:** 33 CHECK constraints and 5 triggers. A technician without a valid licence cannot log time on a chiller, and a parts issue larger than the stock on hand is refused.
+- **Data:** 360 assets in 25 buildings, 60 technicians, 5,329 work orders, 11,190 time entries and 5,268 part transactions, November 2023 to November 2026.
+- **Reproducible:** the generator is seeded with `random.seed(3309)` and writes identical files on every run. CI checks this with SHA-256.
+- **Verified:** every push loads the full dataset into MySQL 8, runs 7 integrity checks, and confirms that 9 rule-breaking statements are each rejected with the expected error.
 
 ## Data model
 
