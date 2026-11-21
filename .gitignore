@@ -1,0 +1,5 @@
+# Generated load files (python3 generator/gen_data.py recreates them byte for byte)
+build/
+__pycache__/
+*.pyc
+.DS_Store
