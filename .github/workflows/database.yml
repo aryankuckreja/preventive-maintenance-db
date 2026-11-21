@@ -19,10 +19,11 @@ jobs:
           --health-interval 5s
           --health-retries 20
     env:
-      MYSQL: mysql -h 127.0.0.1 -P 3306 -u root -ppm
+      MYSQL: mysql -h 127.0.0.1 -P 3306 -u root
+      MYSQL_PWD: pm   # throwaway password for the CI container only
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
+      - uses: actions/checkout@v6
+      - uses: actions/setup-python@v6
         with:
           python-version: "3.12"
       - name: Allow triggers without SUPER (binary logging is on in the image)
