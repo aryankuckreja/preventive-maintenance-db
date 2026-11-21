@@ -168,17 +168,16 @@ All checks passed.
 
 ## Run it
 
-With Docker, Python 3 and the `mysql` command-line client:
+With a local MySQL 8 server, Python 3 and the `mysql` command-line client:
 
 ```bash
-docker compose up -d
-export MYSQL="mysql -h 127.0.0.1 -P 3307 -u root" MYSQL_PWD=pm
+export MYSQL="mysql -u root"   # add -h, -P and credentials as needed
 scripts/load.sh      # generate the data, create the schema, load in order
 scripts/test.sh      # integrity checks, trigger tests, analytics
 $MYSQL --table < queries/analytics.sql
 ```
 
-With a local MySQL 8 server, leave `MYSQL` unset and it defaults to `mysql -u root`. The whole load takes a few seconds.
+The whole load takes a few seconds. CI runs the same steps against MySQL 8.0 on every push.
 
 <details>
 <summary><b>Repository layout</b></summary>
@@ -202,11 +201,9 @@ docs/data-generation.md     how each table is generated
 
 - **Generating data against live triggers is a test suite in itself.** Any mistake in the generator (a component placed in the wrong building, or labour logged by a technician whose licence had lapsed) stops the load with the trigger's error message. The triggers check the generator as much as the generator exercises the triggers.
 - **Load order is a dependency graph.** The certification requirements had to sit between two halves of the generated data, which is the reason for the two-stage load.
-- **A test should check why something failed, not only that it failed.** The first version of the trigger tests passed a case that was rejected by the wrong constraint. Matching the expected error closed that gap.
-- **MySQL and MariaDB differ in small ways.** Error codes and CHECK constraint messages are not the same, which is why CI runs against the real MySQL 8.0 image.
 
 ## Credits
 
-Built in SE 3309 (Database Management Systems) at Western University, Fall 2026, by Group 20, a team of four. The schema, constraints and triggers were designed as a team. The data generator and the staged load are my part of the assignment. The analytics queries, the tests, the Docker setup and CI were added to this repository after the assignment.
+Built in SE 3309 (Database Management Systems) at Western University, Fall 2026, by Group 20, a team of four. The schema, constraints and triggers were designed as a team. The data generator and the staged load are my part of the assignment. After the assignment I added the analytics queries, the tests and CI. I use Claude as a working part of my development process, and those additions were built with Claude under my direction; I reviewed every query against the data and every test against the schema.
 
 All names, buildings, model numbers and postal codes in the data are made up.
