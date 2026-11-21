@@ -1,0 +1,42 @@
+name: database
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  load-and-test:
+    runs-on: ubuntu-latest
+    services:
+      mysql:
+        image: mysql:8.0
+        env:
+          MYSQL_ROOT_PASSWORD: pm
+        ports:
+          - 3306:3306
+        options: >-
+          --health-cmd "mysqladmin ping -h localhost -ppm"
+          --health-interval 5s
+          --health-retries 20
+    env:
+      MYSQL: mysql -h 127.0.0.1 -P 3306 -u root -ppm
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Allow triggers without SUPER (binary logging is on in the image)
+        run: $MYSQL -e "SET GLOBAL log_bin_trust_function_creators = 1;"
+      - name: Generate data (seeded, about 26,000 rows)
+        run: python3 generator/gen_data.py
+      - name: Generator is deterministic
+        run: |
+          sha256sum build/*.sql > /tmp/first.sha
+          python3 generator/gen_data.py > /dev/null
+          sha256sum -c /tmp/first.sha
+      - name: Load schema and data into MySQL 8
+        run: bash scripts/load.sh
+      - name: Integrity checks, trigger tests and analytics
+        run: bash scripts/test.sh
+      - name: Print analytics results
+        run: $MYSQL --table < queries/analytics.sql
