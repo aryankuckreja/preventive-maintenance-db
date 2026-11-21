@@ -1,7 +1,7 @@
 # Local MySQL 8 for trying the database without installing anything else.
 #   docker compose up -d
-#   MYSQL="mysql -h 127.0.0.1 -P 3307 -u root -ppm" scripts/load.sh
-#   MYSQL="mysql -h 127.0.0.1 -P 3307 -u root -ppm" scripts/test.sh
+#   export MYSQL="mysql -h 127.0.0.1 -P 3307 -u root" MYSQL_PWD=pm
+#   scripts/load.sh && scripts/test.sh
 services:
   mysql:
     image: mysql:8.0
